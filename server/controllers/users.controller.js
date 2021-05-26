@@ -21,6 +21,7 @@ userController.create = catchAsync(async (req, res, next) => {
     email,
     password,
   });
+  await user.save();
   const accessToken = await user.generateToken();
   return sendResponse(
     res,
@@ -30,7 +31,7 @@ userController.create = catchAsync(async (req, res, next) => {
     null,
     "Create user successful"
   );
-})
+});
 
 userController.read = async (req, res) => {
   const user = await User.findOne({ _id: req.params.id });
