@@ -18,6 +18,7 @@ const ComposerButton = ({ title, icon }) => {
 
 export default function Composer() {
   const [body, setBody] = useState();
+  const [image, setImage] = useState(null);
   const dispatch = useDispatch();
 
   const onChange = (e) => {
@@ -28,6 +29,12 @@ export default function Composer() {
     e.preventDefault();
     dispatch(postActions.createPost(body));
     setBody("");
+  };
+
+  const onHandleChange = (e) => {
+    if (e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
   };
 
   return (
@@ -44,11 +51,12 @@ export default function Composer() {
               onChange={onChange}
               placeholder="What's on your mind?"
               className="border-0 rounded-md post-text"
-            />
+            />{" "}
           </Form.Group>
+          <input type="file" onChange={onHandleChange} />
         </Form>
       </Card.Body>
-      <hr className="mt-0" />
+      <hr className="mt-2" />
       <ButtonGroup size="lg" className="m-2">
         <ComposerButton title="Live Video" icon="video" />
         <ComposerButton title="Photo Video" icon="photo-video" />

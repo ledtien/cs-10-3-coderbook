@@ -16,10 +16,16 @@
   overflow: hidden;
   border-radius: 1rem;
   display: inline-block;
-	-webkit-border-radius: 1rem;
+  -webkit-border-radius: 1rem;
   background-color: var(--bg-primary);
 }
 
 .comment-bubble > p {
   margin-bottom: 0rem;
+}
+
+.time-font {
+  font-weight: lighter;
+  font-size: smaller;
+  font-style: italic;
 }

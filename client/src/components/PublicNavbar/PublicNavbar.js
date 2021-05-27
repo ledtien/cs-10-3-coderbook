@@ -2,13 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import {
-  Nav,
-  Form,
-  Navbar,
-  FormControl,
-  NavDropdown,
-} from "react-bootstrap";
+import { Nav, Form, Navbar, FormControl, NavDropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "./style.css";
@@ -24,9 +18,13 @@ const PublicNavbar = () => {
     dispatch(authActions.logout());
   };
 
+  const { users } = useSelector((state) => state.user);
+  console.log({ users });
   const authLinks = (
+    // change the link profiles and change the avatar of users
     <Nav>
       <Nav.Link href="/PrimeTimeTran">
+        {" "}
         <div className="nav-icon">
           <FontAwesomeIcon icon="user" size="lg" />
         </div>
@@ -55,7 +53,7 @@ const PublicNavbar = () => {
           </div>
         }
       >
-        <NavDropdown.Item href="#action/3.1">Loi V Tran</NavDropdown.Item>
+        <NavDropdown.Item href="#action/3.1">Settings</NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item onClick={handleLogout} href="#action/3.4">
           Log out
@@ -83,7 +81,7 @@ const PublicNavbar = () => {
       <Form inline className="ml-5 w-100">
         <FormControl
           type="text"
-          placeholder="Search"
+          placeholder="Search" //do the search bar
           className="mr-sm-2 rounded-pill border-0 rounded-md search-bar"
         />
       </Form>
