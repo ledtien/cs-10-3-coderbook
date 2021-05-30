@@ -162,7 +162,7 @@ export default function RegisterPage() {
             ></input>
 
             <Form.Group controlId="name">
-              <Form.Label>Email</Form.Label>
+              <Form.Label>Full Name</Form.Label>
               <Form.Control onChange={onChange} type="text" placeholder="" />
             </Form.Group>
 
