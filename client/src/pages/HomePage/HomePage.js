@@ -61,7 +61,7 @@ export default function HomePage() {
     <Row>
       <Col className="d-flex flex-column pl-1 mt-3">
         <ButtonGroup vertical>
-          {SIDEBAR_BUTTONS.map((b) => {
+          {SIDEBAR_BUTTONS.map((b, index) => {
             return <SidebarButton key={b.title} {...b} />;
           })}
         </ButtonGroup>
@@ -72,8 +72,8 @@ export default function HomePage() {
         className="d-flex flex-column align-items-center posts-container"
       >
         <Composer />
-        {posts.map((p) => {
-          return <Post post={p} />;
+        {posts.map((p, index) => {
+          return <Post key={index} post={p} />;
         })}
       </Col>
       <Col></Col>

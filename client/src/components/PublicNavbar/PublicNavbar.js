@@ -26,7 +26,7 @@ const PublicNavbar = () => {
 
   const onSubmitSearch = (e) => {
     e.preventDefault();
-    dispatch(searchActions.search);
+    dispatch(searchActions.getSearch());
   };
 
   const authLinks = (

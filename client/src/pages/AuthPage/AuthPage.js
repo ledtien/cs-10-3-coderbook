@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { Link, Redirect } from "react-router-dom";
 
@@ -20,24 +20,41 @@ import { authActions } from "../../redux/actions";
 import Footer from "../../components/Footer";
 
 export default function RegisterPage() {
+  const photoInput = useRef();
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  const [user, setUser] = useState({ email: "", password: "" });
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
   const [show, setShow] = useState(false);
+  const [photo, setPhoto] = useState(null);
+
+  const updatePhoto = () => {
+    const file = photoInput.current.files && photoInput.current.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setPhoto(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
 
   const onToggleModal = (e) => {
     e.preventDefault();
     setShow(!show);
   };
 
+  const onChange = (e) => {
+    setUser({ ...user, [e.target.id]: e.target.value });
+  };
+
   const onLogin = (e) => {
     e.preventDefault();
     dispatch(authActions.loginRequest(user.email, user.password));
-  };
-
-  const onChange = (e) => {
-    setUser({ ...user, [e.target.id]: e.target.value });
   };
 
   const onSubmit = (e) => {
@@ -134,6 +151,21 @@ export default function RegisterPage() {
             onSubmit={onSubmit}
             className="d-flex flex-column justify-content-center"
           >
+            {photo && <img alt="avatar" src={photo} />}
+            <label htmlFor="photo">Photo</label>
+            <input
+              className="mb-3"
+              type="file"
+              id="photo"
+              ref={photoInput}
+              onChange={updatePhoto}
+            ></input>
+
+            <Form.Group controlId="name">
+              <Form.Label>Email</Form.Label>
+              <Form.Control onChange={onChange} type="text" placeholder="" />
+            </Form.Group>
+
             <Form.Row>
               <Form.Group as={Col} controlId="email">
                 <Form.Label>Email</Form.Label>

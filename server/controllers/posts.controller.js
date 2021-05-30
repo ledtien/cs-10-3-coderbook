@@ -1,5 +1,6 @@
 const Post = require("../models/Post");
 const Comment = require("../models/Comment");
+const Reaction = require("../models/Reaction");
 
 const {
   AppError,
@@ -52,7 +53,17 @@ postController.destroy = catchAsync(async (req, res) => {
 });
 
 postController.getHomPagePosts = catchAsync(async (req, res) => {
-  const posts = await Post.find({}).limit().sort({ _id: -1 });
+  const posts = await Post.find({})
+    .limit()
+    .sort({ _id: -1 })
+    .populate("owner")
+    .populate({
+      path: "comments",
+      populate: {
+        path: "owner",
+      },
+    })
+    .populate({ path: "reactions", populate: { path: "owner" } });
   return sendResponse(res, 200, true, { posts }, null, "Get all posts!");
 });
 
@@ -76,6 +87,18 @@ postController.createComment = catchAsync(async (req, res) => {
     .execPopulate();
 
   return sendResponse(res, 200, true, { post }, null, "Login successful");
+});
+
+postController.createReaction = catchAsync(async (req, res) => {
+  const reaction = await Reaction.create({
+    owner: req.userId,
+    ...req.body,
+    post: req.params.id,
+  });
+  const post = await Post.findById(req.params.id);
+  await post.reactions.push(reaction._id);
+  await post.save();
+  return sendResponse(res, 200, true, { reaction }, null, "Login successful");
 });
 
 module.exports = postController;

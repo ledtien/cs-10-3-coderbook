@@ -109,7 +109,6 @@ const deletePost = (postId) => async (dispatch) => {
   dispatch({ type: types.DELETE_POST_REQUEST, payload: null });
   try {
     const res = await api.delete(`/posts/${postId}`);
-    console.log(res);
     dispatch({
       payload: res.data,
       type: types.DELETE_POST_SUCCESS,
@@ -143,6 +142,16 @@ const createPostReaction =
     }
   };
 
+const createReaction = (postId) => async (dispatch) => {
+  try {
+    //Post: http://localhost:5000/api/posts/:id/reactions
+    const res = await api.post(`/posts/${postId}/reactions`, {
+      type: "Like",
+      postId,
+    });
+  } catch (error) {}
+};
+
 export const postActions = {
   postsRequest,
   getSinglePost,
@@ -151,4 +160,5 @@ export const postActions = {
   updatePost,
   deletePost,
   createPostReaction,
+  createReaction,
 };

@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useDispatch } from "react-redux";
 
-import { commentActions } from "../../redux/actions";
+import { commentActions, postActions } from "../../redux/actions";
 
 import "./style.css";
 
@@ -66,6 +66,7 @@ const CommentForm = ({ postId }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     dispatch(commentActions.create(body, postId));
+    setBody("");
   };
 
   return (
@@ -104,7 +105,7 @@ const PostComments = (props) => {
   return (
     <Card.Body>
       <ListGroup className="list-group-flush">
-        {props.comments?.map((c) => (
+        {props.comments?.map((c, index) => (
           <Comment key={c.id} {...c} />
         ))}
       </ListGroup>
@@ -118,9 +119,17 @@ const POST_ACTIONS = [
   { title: "Share", icon: "share" },
 ];
 
-const PostActionButton = ({ title, icon }) => {
+const PostActionButton = ({ title, icon, postId, post }) => {
+  const dispatch = useDispatch();
+
+  const onClick = () => {
+    if (title === "Like") {
+      dispatch(postActions.createReaction(postId));
+    }
+  };
+
   return (
-    <Button className="bg-light bg-white text-dark border-0">
+    <Button onClick={onClick} className="bg-light bg-white text-dark border-0">
       {" "}
       <FontAwesomeIcon
         size="lg"
@@ -133,22 +142,22 @@ const PostActionButton = ({ title, icon }) => {
   );
 };
 
-const PostActions = () => {
+const PostActions = ({ post }) => {
   //make the expression icons
   return (
     <ButtonGroup aria-label="Basic example">
-      {POST_ACTIONS.map((a) => {
-        return <PostActionButton key={a.title} {...a} />;
+      {POST_ACTIONS.map((a, index) => {
+        return <PostActionButton key={a.title} {...a} postId={post._id} />;
       })}
     </ButtonGroup>
   );
 };
 
-const PostReactions = () => {
+const PostReactions = ({ post }) => {
   return (
     <div className="d-flex justify-content-between my-2 mx-3">
-      <p className="mb-0">Vinh Nguyen, Bitna Kim and 21 others</p>
-      <p className="mb-0">20 comments</p>
+      <p className="mb-0">{post.reactions.length}</p>
+      <p className="mb-0">{post.comments.length} comments</p>
     </div>
   );
 };
@@ -176,11 +185,11 @@ export default function Post({ post }) {
         variant="top"
         src="https://images.unsplash.com/photo-1529231812519-f0dcfdf0445f?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8dGFsZW50ZWR8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"
       />
-      <PostReactions />
+      <PostReactions post={post} />
       <hr className="my-1" />
-      <PostActions />
+      <PostActions post={post} />
       <hr className="mt-1" />
-      <PostComments comments={post.comments} />
+      <PostComments key={post._id} comments={post.comments} />
       <CommentForm postId={post._id} />
     </Card>
   );
