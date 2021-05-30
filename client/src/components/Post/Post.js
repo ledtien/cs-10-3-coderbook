@@ -7,6 +7,8 @@ import {
   ListGroup,
   ButtonGroup,
   ListGroupItem,
+  Tooltip,
+  OverlayTrigger,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -113,6 +115,12 @@ const PostComments = (props) => {
   );
 };
 
+const POST_REACTIONS = [
+  { title: "Heart", icon: "heart" },
+  { title: "Angry", icon: "angry" },
+  { title: "Crying", icon: "sad-cry" },
+];
+
 const POST_ACTIONS = [
   { title: "Like", icon: "thumbs-up" },
   { title: "Comment", icon: "comment" },
@@ -123,33 +131,61 @@ const PostActionButton = ({ title, icon, postId, post }) => {
   const dispatch = useDispatch();
 
   const onClick = () => {
-    if (title === "Like") {
-      dispatch(postActions.createReaction(postId));
+    if (title === "Like" || "Heart" || "Angry" || "Crying") {
+      dispatch(postActions.createReaction(postId, title));
     }
   };
 
   return (
-    <Button onClick={onClick} className="bg-light bg-white text-dark border-0">
-      {" "}
-      <FontAwesomeIcon
-        size="lg"
-        icon={icon}
-        color="black"
-        className="mr-2 action-icon"
-      />
-      {title}
-    </Button>
+    <>
+      <Button
+        onClick={onClick}
+        className="bg-light bg-white text-dark border-0"
+      >
+        {" "}
+        <FontAwesomeIcon
+          size="lg"
+          icon={icon}
+          // color="black"
+          className="mr-2 action-icon"
+        />
+        {title}
+      </Button>
+    </>
   );
 };
 
 const PostActions = ({ post }) => {
   //make the expression icons
   return (
-    <ButtonGroup aria-label="Basic example">
-      {POST_ACTIONS.map((a, index) => {
-        return <PostActionButton key={a.title} {...a} postId={post._id} />;
-      })}
-    </ButtonGroup>
+    <>
+      <div className="reaction-button">
+        <ButtonGroup aria-label="Basic example">
+          {POST_REACTIONS.map((a, index) => {
+            return (
+              <PostActionButton
+                key={a.title}
+                {...a}
+                postId={post._id}
+                post={post}
+              />
+            );
+          })}
+        </ButtonGroup>
+      </div>
+      <ButtonGroup aria-label="Basic example">
+        {POST_ACTIONS.map((a, index) => {
+          return (
+            <PostActionButton
+              key={a.title}
+              {...a}
+              postId={post._id}
+              post={post}
+            />
+          );
+        })}
+      </ButtonGroup>
+    </>
   );
 };
 
@@ -157,29 +193,32 @@ const PostReactions = ({ post }) => {
   return (
     <div className="d-flex justify-content-between my-2 mx-3">
       <p className="mb-0">{post.reactions.length}</p>
-      <p className="mb-0">{post.comments.length} comments</p>
+      <p className="mb-0">
+        {post.comments.length === 0 ? "" : post.comments.length}{" "}
+        {post.comments.length < 2 ? "Comment" : "Comments"}
+      </p>
     </div>
   );
 };
 
-function PostHeader({ time }) {
+function PostHeader({ time, user }) {
   //change the name and avatar
   return (
     <div className="d-flex p-2">
       <Avatar url="https://scontent.fsgn5-6.fna.fbcdn.net/v/t1.0-1/p480x480/13924881_10105599279810183_392497317459780337_n.jpg?_nc_cat=109&ccb=3&_nc_sid=7206a8&_nc_ohc=uI6aGTdf9vEAX8-Aev9&_nc_ht=scontent.fsgn5-6.fna&tp=6&oh=e8b18753cb8aa63937829afe3aa916a7&oe=6064C685" />
       <div className="ml-3">
         {" "}
-        <h3 className="font-weight-bold">Charles Lee</h3>
+        <h3 className="font-weight-bold">{user.name}</h3>
         <p className="time-font">{time}</p>
       </div>
     </div>
   );
 }
 
-export default function Post({ post }) {
+export default function Post({ post, user }) {
   return (
     <Card className="p-3 mb-3 shadow rounded-md">
-      <PostHeader time={post.createdAt} />
+      <PostHeader time={post.createdAt} user={user} />
       {post.body}
       <Card.Img
         variant="top"

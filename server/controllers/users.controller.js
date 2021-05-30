@@ -9,7 +9,7 @@ const User = require("../models/User");
 const userController = {};
 
 userController.create = catchAsync(async (req, res, next) => {
-  let { email, password } = req.body;
+  let { email, password, name } = req.body;
   let user = await User.findOne({ email });
 
   if (user)
@@ -20,6 +20,7 @@ userController.create = catchAsync(async (req, res, next) => {
   user = await User.create({
     email,
     password,
+    name,
   });
   await user.save();
   const accessToken = await user.generateToken();

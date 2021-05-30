@@ -101,4 +101,14 @@ postController.createReaction = catchAsync(async (req, res) => {
   return sendResponse(res, 200, true, { reaction }, null, "Login successful");
 });
 
+postController.destroyReaction = catchAsync(async (req, res) => {
+  await Reaction.findByIdAndDelete(req.params.id, (err, post) => {
+    if (!post) {
+      res.status(404).json({ message: "Post not Found" });
+    } else {
+      res.json(post);
+    }
+  });
+});
+
 module.exports = postController;

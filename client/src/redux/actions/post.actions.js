@@ -142,14 +142,24 @@ const createPostReaction =
     }
   };
 
-const createReaction = (postId) => async (dispatch) => {
+const createReaction = (postId, title) => async (dispatch) => {
   try {
     //Post: http://localhost:5000/api/posts/:id/reactions
     const res = await api.post(`/posts/${postId}/reactions`, {
-      type: "Like",
+      type: { title },
       postId,
     });
   } catch (error) {}
+};
+
+const deleteReaction = (postId) => async (dispatch) => {
+  try {
+    const res = await api.delete(`/posts/${postId}/reactions`, {
+      postId,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const postActions = {
@@ -161,4 +171,5 @@ export const postActions = {
   deletePost,
   createPostReaction,
   createReaction,
+  deleteReaction,
 };
