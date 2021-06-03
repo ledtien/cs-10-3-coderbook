@@ -28,7 +28,7 @@ authController.loginWithEmail = catchAsync(async (req, res, next) => {
 });
 
 authController.testDB = catchAsync(async (req, res, next) => {
-  const user = await User.findById({});
+  const user = await User.find({});
   return sendResponse(
     res,
     200,
