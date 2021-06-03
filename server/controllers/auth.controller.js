@@ -27,4 +27,16 @@ authController.loginWithEmail = catchAsync(async (req, res, next) => {
   );
 });
 
+authController.testDB = catchAsync(async (req, res, next) => {
+  const user = await User.findById({});
+  return sendResponse(
+    res,
+    200,
+    true,
+    { message: "Hi", users },
+    null,
+    "Hi production DB!"
+  );
+});
+
 module.exports = authController;
