@@ -3,7 +3,10 @@ const Schema = mongoose.Schema;
 
 const reactionSchema = Schema(
   {
-    body: { type: String, unique: false, default: "" },
+    body: {
+      type: String,
+      unique: false,
+    },
     type: ["Like", "Heart", "Care", "Laugh", "Angry", "Sad"],
     owner: {
       ref: "User",
