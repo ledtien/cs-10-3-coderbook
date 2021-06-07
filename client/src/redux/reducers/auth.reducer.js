@@ -6,8 +6,9 @@ const initialState = {
   isAuthenticated,
   accessToken: localStorage.getItem("accessToken"),
   user: {
-    firstName: "Loi",
-    lastName: "Tran",
+    name: "",
+    email: "",
+    avatarUrl: "",
   },
 };
 
@@ -26,11 +27,13 @@ const authReducer = (state = initialState, action) => {
 
     case types.REGISTER_SUCCESS:
       localStorage.setItem("accessToken", payload.accessToken);
+      localStorage.setItem("state", JSON.stringify(payload.user));
       return {
         ...state,
         loading: false,
         isAuthenticated: true,
         accessToken: payload.accessToken,
+        user: payload.user,
       };
 
     case types.LOGIN_SUCCESS:
@@ -38,12 +41,13 @@ const authReducer = (state = initialState, action) => {
     case types.VERIFY_EMAIL_SUCCESS:
     case types.LOGIN_FACEBOOK_SUCCESS:
       localStorage.setItem("accessToken", payload.accessToken);
+      localStorage.setItem("state", JSON.stringify(payload.user));
       return {
         ...state,
         loading: false,
-        user: payload.user,
         isAuthenticated: true,
         accessToken: payload.accessToken,
+        user: payload.user,
       };
 
     case types.LOGIN_FAILURE:
@@ -69,6 +73,8 @@ const authReducer = (state = initialState, action) => {
       };
 
     case types.LOGOUT:
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("state");
       return {
         ...state,
         user: null,

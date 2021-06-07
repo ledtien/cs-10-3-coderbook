@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link, Redirect } from "react-router-dom";
 
@@ -20,7 +20,6 @@ import { authActions } from "../../redux/actions";
 import Footer from "../../components/Footer";
 
 export default function RegisterPage() {
-  const photoInput = useRef();
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
@@ -28,20 +27,21 @@ export default function RegisterPage() {
     name: "",
     email: "",
     password: "",
+    avatarUrl: "",
   });
 
   const [show, setShow] = useState(false);
-  const [photo, setPhoto] = useState(null);
+  // const [photo, setPhoto] = useState(null);
 
-  const updatePhoto = () => {
-    const file = photoInput.current.files && photoInput.current.files[0];
+  // const updatePhoto = () => {
+  //   const file = photoInput.current.files && photoInput.current.files[0];
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setPhoto(reader.result);
-      reader.readAsDataURL(file);
-    }
-  };
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => setPhoto(reader.result);
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   const onToggleModal = (e) => {
     e.preventDefault();
@@ -151,19 +151,22 @@ export default function RegisterPage() {
             onSubmit={onSubmit}
             className="d-flex flex-column justify-content-center"
           >
-            {photo && <img alt="avatar" src={photo} />}
-            <label htmlFor="photo">Photo</label>
-            <input
-              className="mb-3"
-              type="file"
-              id="photo"
-              ref={photoInput}
-              onChange={updatePhoto}
-            ></input>
+            <Form.Group controlId="avatarUrl">
+              <Form.Label>Avatar URL</Form.Label>
+              <Form.Control
+                onChange={onChange}
+                type="text"
+                placeholder="Your Avatar URL"
+              />
+            </Form.Group>
 
             <Form.Group controlId="name">
               <Form.Label>Full Name</Form.Label>
-              <Form.Control onChange={onChange} type="text" placeholder="" />
+              <Form.Control
+                onChange={onChange}
+                type="text"
+                placeholder="What's your full name?"
+              />
             </Form.Group>
 
             <Form.Row>

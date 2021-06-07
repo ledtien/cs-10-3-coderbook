@@ -14,6 +14,9 @@ const PublicNavbar = () => {
   const { loading, isAuthenticated } = useSelector((state) => state.auth);
   const [search, setSearch] = useState("");
 
+  const localUser = localStorage.getItem("state");
+  const user = JSON.parse(localUser);
+
   const handleLogout = () => {
     dispatch(authActions.logout());
   };
@@ -32,12 +35,39 @@ const PublicNavbar = () => {
   const authLinks = (
     // change the link profiles and change the avatar of users
     <Nav>
-      <Nav.Link href="/PrimeTimeTran">
-        {" "}
-        <div className="nav-icon">
-          <FontAwesomeIcon icon="user" size="lg" />
-        </div>
-      </Nav.Link>
+      {user ? (
+        <Nav.Link as={Link} to={`/${user.name}`}>
+          <div
+            className="nav-icon"
+            style={{
+              padding: "0",
+              width: "120px",
+              display: "flex",
+            }}
+          >
+            <img
+              src={user.avatarUrl}
+              alt="avatar"
+              style={{ width: "40px", height: "40px", borderRadius: "50%" }}
+            />
+            <div
+              style={{
+                width: "80px",
+                display: "flex",
+                alignItems: "center",
+                padding: "5px",
+                justifyContent: "center",
+              }}
+            >
+              {user.name}
+            </div>
+            {/* <FontAwesomeIcon icon="user" size="lg" /> */}
+          </div>
+        </Nav.Link>
+      ) : (
+        ""
+      )}
+
       <Nav.Link href="#create">
         <div className="nav-icon">
           <FontAwesomeIcon icon={"plus"} size="lg" />

@@ -9,7 +9,7 @@ const User = require("../models/User");
 const userController = {};
 
 userController.create = catchAsync(async (req, res, next) => {
-  let { email, password, name } = req.body;
+  let { email, password, name, avatarUrl } = req.body;
   let user = await User.findOne({ email });
 
   if (user)
@@ -18,9 +18,10 @@ userController.create = catchAsync(async (req, res, next) => {
   const salt = await bcrypt.genSalt(10);
   password = await bcrypt.hash(password, salt);
   user = await User.create({
+    avatarUrl,
+    name,
     email,
     password,
-    name,
   });
   await user.save();
   const accessToken = await user.generateToken();

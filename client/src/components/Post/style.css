@@ -29,3 +29,9 @@
   font-size: smaller;
   font-style: italic;
 }
+
+.reaction-button {
+  /* display: none; */
+  /* position: absolute;
+  margin-top: 87%; */
+}
