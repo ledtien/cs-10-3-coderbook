@@ -12,7 +12,8 @@ const postController = {};
 
 postController.create = catchAsync(async (req, res) => {
   const post = await Post.create({ owner: req.userId, ...req.body });
-  res.json(post);
+  const newPost = await Post.findById(post._id).populate("owner");
+  res.status(200).json(newPost);
 });
 
 postController.read = catchAsync(async (req, res, next) => {
@@ -29,7 +30,7 @@ postController.read = catchAsync(async (req, res, next) => {
 postController.update = catchAsync(async (req, res) => {
   await Post.findByIdAndUpdate(
     { _id: req.params.id },
-    { email: req.body.email },
+    { ...req.body },
     { new: true },
     (err, post) => {
       console.log({ err, post });
@@ -37,6 +38,7 @@ postController.update = catchAsync(async (req, res) => {
         res.status(404).json({ message: "Post not Found" });
       } else {
         res.json(post);
+        post.save();
       }
     }
   );
@@ -54,7 +56,6 @@ postController.destroy = catchAsync(async (req, res) => {
 
 postController.getHomPagePosts = catchAsync(async (req, res) => {
   const posts = await Post.find({})
-    .limit()
     .sort({ _id: -1 })
     .populate("owner")
     .populate({
@@ -89,6 +90,23 @@ postController.createComment = catchAsync(async (req, res) => {
   return sendResponse(res, 200, true, { post }, null, "Login successful");
 });
 
+postController.updateComment = catchAsync(async (req, res) => {
+  await Comment.findByIdAndUpdate(
+    { _id: req.params.id },
+    { ...req.body },
+    { new: true },
+    (err, comment) => {
+      console.log({ err, comment });
+      if (!comment) {
+        res.status(404).json({ message: "Comment not Found" });
+      } else {
+        res.json(comment);
+        comment.save();
+      }
+    }
+  );
+});
+
 postController.createReaction = catchAsync(async (req, res) => {
   const reaction = await Reaction.create({
     owner: req.userId,
@@ -101,7 +119,7 @@ postController.createReaction = catchAsync(async (req, res) => {
   return sendResponse(res, 200, true, { reaction }, null, "Login successful");
 });
 
-postController.destroyReaction = catchAsync(async (req, res) => {
+postController.destroyComment = catchAsync(async (req, res) => {
   await Reaction.findByIdAndDelete(req.params.id, (err, post) => {
     if (!post) {
       res.status(404).json({ message: "Post not Found" });

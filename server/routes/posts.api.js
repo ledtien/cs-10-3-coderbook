@@ -1,6 +1,5 @@
-var express = require("express");
-var router = express.Router();
-
+const express = require("express");
+const router = express.Router();
 const authMiddleware = require("../middlewares/authentication");
 const postsController = require("../controllers/posts.controller");
 
@@ -9,6 +8,17 @@ router.post(
   "/:id/comments",
   authMiddleware.loginRequired,
   postsController.createComment
+);
+router.put(
+  "/:id/comments/:id",
+  authMiddleware.loginRequired,
+  postsController.updateComment
+);
+
+router.delete(
+  "/:id/comments/:id",
+  authMiddleware.loginRequired,
+  postsController.destroyComment
 );
 router.post(
   "/:id/reactions",

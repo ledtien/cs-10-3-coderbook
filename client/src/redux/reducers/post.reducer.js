@@ -14,6 +14,9 @@ const postReducer = (state = initialState, action) => {
     case types.CREATE_POST_REQUEST:
     case types.UPDATE_POST_REQUEST:
     case types.DELETE_POST_REQUEST:
+    case types.CREATE_COMMENT_REQUEST:
+    case types.UPDATE_COMMENT_REQUEST:
+    case types.DELETE_COMMENT_REQUEST:
     case types.GET_SINGLE_POST_REQUEST:
       return { ...state, loading: true };
 
@@ -45,7 +48,6 @@ const postReducer = (state = initialState, action) => {
     case types.CREATE_POST_SUCCESS:
       console.log("types.CREATE_POST_SUCCESS");
       const newPosts = [payload, ...state.posts];
-      console.log({ post: newPosts });
       return {
         ...state,
         posts: newPosts,
@@ -60,16 +62,40 @@ const postReducer = (state = initialState, action) => {
       };
 
     case types.SEND_REACTION_REQUEST:
-    case types.CREATE_REVIEW_REQUEST:
+    case types.CREATE_COMMENT_REQUEST:
       return { ...state, submitLoading: true };
 
-    case types.CREATE_REVIEW_SUCCESS:
+    case types.CREATE_COMMENT_SUCCESS:
       const idx = state.posts.findIndex((p) => p._id === payload._id);
       state.posts[idx] = payload;
 
       return {
         ...state,
         submitLoading: false,
+        posts: [...state.posts],
+      };
+
+    case types.DELETE_COMMENT_SUCCESS:
+      let index = state.posts.findIndex((post) => post._id === payload.post);
+      state.posts[index].comments = state.posts[index].comments.filter(
+        (comment) => comment._id !== payload._id
+      );
+
+      return {
+        ...state,
+        loading: true,
+        posts: [...state.posts],
+      };
+
+    case types.UPDATE_COMMENT_SUCCESS:
+      let idx1 = state.posts.findIndex((post) => post._id === payload.post);
+      let idx2 = state.posts[idx1].comments.findIndex(
+        (comment) => comment._id === payload._id
+      );
+      state.posts[idx1].comments[idx2] = payload;
+      return {
+        ...state,
+        loading: false,
         posts: [...state.posts],
       };
 
@@ -96,7 +122,9 @@ const postReducer = (state = initialState, action) => {
       };
 
     case types.SEND_REACTION_FAILURE:
-    case types.CREATE_REVIEW_FAILURE:
+    case types.CREATE_COMMENT_FAILURE:
+    case types.UPDATE_COMMENT_FAILURE:
+    case types.DELETE_COMMENT_FAILURE:
       return { ...state, submitLoading: false };
     default:
       return state;

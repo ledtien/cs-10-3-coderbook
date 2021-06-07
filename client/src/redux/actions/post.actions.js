@@ -59,7 +59,7 @@ const getSinglePost = (postId) => async (dispatch) => {
 //   }
 // };
 
-const createPost = (body, images) => async (dispatch) => {
+const createPost = (body) => async (dispatch) => {
   dispatch({ type: types.CREATE_POST_REQUEST, payload: null });
   try {
     // For uploading file manually
@@ -74,7 +74,7 @@ const createPost = (body, images) => async (dispatch) => {
     // const res = await api.post("/posts", formData);
 
     // Upload images using cloudinary already
-    const res = await api.post("/posts", { body, images });
+    const res = await api.post("/posts", body);
     dispatch({
       payload: res.data,
       type: types.CREATE_POST_SUCCESS,
@@ -86,18 +86,19 @@ const createPost = (body, images) => async (dispatch) => {
   }
 };
 
-const updatePost = (postId, title, content, images) => async (dispatch) => {
+const updatePost = (post, body) => async (dispatch) => {
   dispatch({ type: types.UPDATE_POST_REQUEST, payload: null });
   try {
     // let formData = new FormData();
     // formData.set("title", title);
     // formData.set("content", content);
-    const res = await api.put(`/posts/${postId}`, { title, content, images });
+    const res = await api.put(`/posts/${post._id}`, { body: body });
 
     dispatch({
       payload: res.data.data,
       type: types.UPDATE_POST_SUCCESS,
     });
+    console.log({ res });
     dispatch(routeActions.redirect("__GO_BACK__"));
     toast.success("Post updated.");
   } catch (error) {
@@ -105,10 +106,10 @@ const updatePost = (postId, title, content, images) => async (dispatch) => {
   }
 };
 
-const deletePost = (postId) => async (dispatch) => {
+const deletePost = (post) => async (dispatch) => {
   dispatch({ type: types.DELETE_POST_REQUEST, payload: null });
   try {
-    const res = await api.delete(`/posts/${postId}`);
+    const res = await api.delete(`/posts/${post._id}`);
     dispatch({
       payload: res.data,
       type: types.DELETE_POST_SUCCESS,
