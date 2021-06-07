@@ -3,6 +3,7 @@ import { Card, Form, Button, ButtonGroup } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch } from "react-redux";
 import { postActions } from "../../redux/actions";
+import FileBase from "react-file-base64";
 
 import "./style.css";
 
@@ -17,24 +18,13 @@ const ComposerButton = ({ title, icon }) => {
 };
 
 export default function Composer() {
-  const [body, setBody] = useState();
-  const [image, setImage] = useState(null);
+  const [body, setBody] = useState({ body: "", selectedFile: "" });
   const dispatch = useDispatch();
-
-  const onChange = (e) => {
-    setBody(e.target.value);
-  };
 
   const onSubmit = (e) => {
     e.preventDefault();
     dispatch(postActions.createPost(body));
-    setBody("");
-  };
-
-  const onHandleChange = (e) => {
-    if (e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
+    setBody({ ...body, body: "", selectedFile: "" });
   };
 
   return (
@@ -47,13 +37,17 @@ export default function Composer() {
             <Form.Control
               id="body"
               type="text"
-              value={body}
-              onChange={onChange}
+              value={body.body}
+              onChange={(e) => setBody({ ...body, body: e.target.value })}
               placeholder="What's on your mind?"
               className="border-0 rounded-md post-text"
             />{" "}
           </Form.Group>
-          <input type="file" onChange={onHandleChange} />
+          <FileBase
+            type="file"
+            multiple={false}
+            onDone={({ base64 }) => setBody({ ...body, selectedFile: base64 })}
+          />
         </Form>
       </Card.Body>
       <hr className="mt-2" />

@@ -11,6 +11,7 @@ const postSchema = Schema(
       required: true,
       type: Schema.Types.ObjectId,
     },
+    selectedFile: { type: String, unique: false },
   },
   {
     timestamps: true,

@@ -50,7 +50,6 @@ export default function HomePage() {
   const posts = useSelector((state) => state.post.posts);
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     dispatch(postActions.postsRequest());
@@ -73,8 +72,9 @@ export default function HomePage() {
         className="d-flex flex-column align-items-center posts-container"
       >
         <Composer />
-        {posts.map((p, index) => {
-          return <Post key={index} post={p} user={user} />;
+
+        {posts.map((post, index) => {
+          return <Post key={post._id} post={post} />;
         })}
       </Col>
       <Col></Col>
